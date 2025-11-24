@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - SIGPP</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Réinitialisation des styles par défaut */
+        h1,h2{
+            text-align: center;
+        }
+        body,
+        h1,
+        h2,
+        p,
+        ul,
+        li {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Sidebar (menu latéral) */
+        .sidebar {
+            width: 250px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .sidebar nav ul {
+            list-style-type: none;
+        }
+
+        .sidebar nav ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .sidebar nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenu principal */
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            margin-left: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .content header {
+            margin-bottom: 20px;
+        }
+
+        .content h1 {
+            color: #333;
+            font-size: 2em;
+        }
+
+        .content h2 {
+            color: #4CAF50;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .content p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Styles pour les tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            max-width: 10px; /* Définir une largeur maximale pour chaque cellule */
+            word-wrap: break-word; /* Permettre au texte de revenir à la ligne */
+            overflow-wrap: break-word; /* Alternative moderne à word-wrap */
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Pied de page */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        #datetime {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        
+        /* Style pour le conteneur des totaux */
+        .totals-container {
+            position: fixed; /* Position fixe pour rester en haut à gauche */
+            top: 10px; /* Marge de 10px depuis le haut */
+            left: 200px; /* Marge de 10px depuis la gauche */
+            background-color: white; /* Fond blanc pour éviter la transparence */
+            padding: 10px; /* Espace intérieur */
+            border: 1px solid #ccc; /* Bordure légère */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre légère */
+            z-index: 1000; /* S'assurer qu'il est au-dessus des autres éléments */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Conteneur des totaux -->
+    <div class="totals-container">
+        <h2>Totaux</h2>
+        <p>Nombre total de produits : <%= totalProducts %></p>
+        <p>Somme totale des stocks : <%= totalStock %></p>
+    </div>
+
+    <!-- Sidebar (menu latéral) -->
+    <aside class="sidebar">
+        <h2>Menu</h2>
+        <nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="logout">Déconnexion</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Contenu principal -->
+    <main class="content">
+        <p id="datetime"></p>
+
+        <script>
+            function updateDateTime() {
+                const now = new Date();
+                const date = now.toLocaleDateString('fr-FR');
+                const time = now.toLocaleTimeString('fr-FR');
+                document.getElementById('datetime').textContent = `${date} ${time}`;
+            }
+
+            setInterval(updateDateTime, 1000);
+            updateDateTime();
+        </script>
+
+
+        <header>
+            <h1>Système de gestion des produits pharmaceutiques</h1>
+        </header>
+        <section>
+            <h2>Bienvenue</h2>
+        </section>
+
+        <!-- Tableau pour les produits avec un stock inférieur à 10 -->
+        <section>
+            <h2>Produits avec un stock inférieur à 10</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prix</th>
+                        <th>Forme</th>
+                        <th>Voies</th>
+                        <th>Stock</th>
+                        <th>Date de peremption</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% lowStockProducts.forEach(product => { %>
+                        <tr>
+                            <td><%= product.id %></td>
+                            <td><%= product.nom %></td>
+                            <td><%= product.prix %></td>
+                            <td><%= product.forme %></td>
+                            <td><%= product.voie %></td>
+                            <td><%= product.quantite %></td>
+                            <td>
+                                <% const date = new Date(product.dateperemption); %>
+                                <%= date.toLocaleDateString('fr-FR') %>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Tableau pour les produits en voie de peremption -->
+        <section>
+            <h2>Produits en voie de peremption</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prix</th>
+                        <th>Forme</th>
+                        <th>Voies</th>
+                        <th>Stock</th>
+                        <th>Date de peremption</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% nearExpirationProducts.forEach(product => { %>
+                        <tr>
+                            <td><%= product.id %></td>
+                            <td><%= product.nom %></td>
+                            <td><%= product.prix %></td>
+                            <td><%= product.forme %></td>
+                            <td><%= product.voie %></td>
+                            <td><%= product.quantite %></td>
+                            <td>
+                                <% const date = new Date(product.dateperemption); %>
+                                <%= date.toLocaleDateString('fr-FR') %>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Tableau pour les produits périmés -->
+        <section>
+            <h2>Produits périmés</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prix</th>
+                        <th>Forme</th>
+                        <th>Voies</th>
+                        <th>Stock</th>
+                        <th>Date de peremption</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% expiredDateProducts.forEach(product => { %>
+                        <tr>
+                            <td><%= product.id %></td>
+                            <td><%= product.nom %></td>
+                            <td><%= product.prix %></td>
+                            <td><%= product.forme %></td>
+                            <td><%= product.voie %></td>
+                            <td><%= product.quantite %></td>
+                            <td>
+                                <% const date = new Date(product.dateperemption); %>
+                                <%= date.toLocaleDateString('fr-FR') %>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>&copy; 2025 SIGPP</p>
+    </footer>
+</body>
+
+</html>

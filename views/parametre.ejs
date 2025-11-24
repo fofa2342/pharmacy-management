@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enregistrement Pharmacie</title>
+    <style>
+        /* Style général */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Conteneur du formulaire */
+        .form-container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Style des labels */
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: bold;
+        }
+
+        /* Style des champs de saisie */
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Style du bouton */
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Mise en page horizontale des champs de saisie */
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row > div {
+            flex: 1;
+        }
+
+        /* Section d'affichage des informations */
+        .info-container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .info-container h2 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .info-container p {
+            color: #555;
+            margin: 0.5rem 0;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-container,
+            .info-container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Enregistrer une Pharmacie</h1>
+        <form id="pharmacieForm">
+            <div class="form-row">
+                <div>
+                    <label for="nom">Nom de la Pharmacie :</label>
+                    <input type="text" id="nom" name="nom" required>
+                </div>
+                <div>
+                    <label for="numero">Numéro de la Pharmacie :</label>
+                    <input type="text" id="numero" name="numero" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label for="message1">Message de Fin 1 :</label>
+                    <textarea id="message1" name="message1" required></textarea>
+                </div>
+                <div>
+                    <label for="message2">Message de Fin 2 :</label>
+                    <textarea id="message2" name="message2" required></textarea>
+                </div>
+            </div>
+            <button type="submit">Enregistrer</button>
+        </form>
+    </div>
+
+    <!-- Section pour afficher les informations du dernier enregistrement -->
+    <div class="info-container">
+        <h2>Dernier Enregistrement</h2>
+        <p><strong>Nom de la Pharmacie :</strong> <span id="lastNom">-</span></p>
+        <p><strong>Numéro de la Pharmacie :</strong> <span id="lastNumero">-</span></p>
+        <p><strong>Message de Fin 1 :</strong> <span id="lastMessage1">-</span></p>
+        <p><strong>Message de Fin 2 :</strong> <span id="lastMessage2">-</span></p>
+    </div>
+
+    <script>
+        // Fonction pour afficher le dernier enregistrement
+        async function afficherDernierEnregistrement() {
+            try {
+                const response = await fetch('http://localhost:3000/dernier-enregistrement');
+                const data = await response.json();
+
+                if (data.data) {
+                    document.getElementById('lastNom').textContent = data.data.nom_pharmacie;
+                    document.getElementById('lastNumero').textContent = data.data.numero_pharmacie;
+                    document.getElementById('lastMessage1').textContent = data.data.message_fin_1;
+                    document.getElementById('lastMessage2').textContent = data.data.message_fin_2;
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+
+        // Afficher le dernier enregistrement au chargement de la page
+        afficherDernierEnregistrement();
+
+        // Gestion de la soumission du formulaire
+        document.getElementById('pharmacieForm').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Empêche le rechargement de la page
+
+            // Récupération des données du formulaire
+            const formData = {
+                nom: document.getElementById('nom').value,
+                numero: document.getElementById('numero').value,
+                message1: document.getElementById('message1').value,
+                message2: document.getElementById('message2').value
+            };
+
+            try {
+                // Envoi des données via une requête POST
+                const response = await fetch('http://localhost:3000/enregistrer-pharmacie', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                alert(data.message); // Affiche un message de succès ou d'erreur
+
+                // Mettre à jour les informations affichées
+                if (data.data) {
+                    document.getElementById('lastNom').textContent = data.data.nom_pharmacie;
+                    document.getElementById('lastNumero').textContent = data.data.numero_pharmacie;
+                    document.getElementById('lastMessage1').textContent = data.data.message_fin_1;
+                    document.getElementById('lastMessage2').textContent = data.data.message_fin_2;
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        });
+    </script> <!-- Lien vers le fichier JavaScript -->
+</body>
+</html>

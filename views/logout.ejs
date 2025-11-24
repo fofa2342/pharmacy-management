@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - SIGPP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: left;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #4b6cb7;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #182848;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Connexion</h1>
+        <form id="loginForm">
+            <label for="matricule">Matricule :</label>
+            <input type="text" id="matricule" name="matricule" required>
+
+            <label for="motDePasse">Mot de passe :</label>
+            <input type="password" id="motDePasse" name="motDePasse" required>
+
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            
+            const matricule = document.getElementById("matricule").value;
+            const motDePasse = document.getElementById("motDePasse").value;
+            
+            try {
+                const response = await fetch("/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ matricule, motDePasse })
+                });
+
+                const data = await response.json(); // Lire la réponse JSON
+
+                if (!response.ok) {
+                    console.error("Erreur de connexion :", data.error);
+                    alert(data.error); // Afficher un message d'erreur à l'utilisateur
+                    return;
+                }
+
+                // Rediriger si tout est bon
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                }
+
+            } catch (error) {
+                console.error("Erreur réseau :", error);
+                alert("Une erreur réseau s'est produite. Vérifiez votre connexion.");
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>flaws.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="project-flaws-report">Project Flaws Report</h1>
+<p>This document outlines identified flaws in the project, categorized by type.</p>
+<h2 id="1-security-vulnerabilities-critical">1. Security Vulnerabilities (CRITICAL)</h2>
+<h3 id="sql-injection-risks">SQL Injection Risks</h3>
+<ul>
+<li><strong>Direct SQL Injection in <code>/vente</code> POST route (app.js):</strong> The <code>productIds.join(',')</code> used in <code>checkQuery</code> and <code>updateQuery</code> is directly vulnerable to SQL injection. Malicious input in <code>req.body.stock</code> can lead to arbitrary SQL execution.</li>
+<li><strong>SQL Injection in <code>/enregistrer-pharmacie</code> and <code>/dernier-enregistrement</code> routes (app.js):</strong> These routes directly use a <code>connection</code> object (likely global), bypassing <code>req.getConnection</code>, and lack authentication, exposing them to unauthorized access and potential SQL injection.</li>
+<li><strong>Potential SQL Injection via <code>LIKE %...%</code> (app.js):</strong> Routes like <code>/admin</code>, <code>/vente</code> (GET), <code>/verification</code>, and <code>/entree</code> (GET) construct dynamic queries with <code>LIKE ?</code> and wildcards (<code>%</code>). If user-provided wildcards are not properly escaped, this could lead to injection.</li>
+</ul>
+<h3 id="insecure-password-handling">Insecure Password Handling</h3>
+<ul>
+<li><strong>Plain-text password comparison in <code>/login</code> POST route (app.js):</strong> Passwords are compared directly (<code>motDePasse !== utilisateur.mot_de_passe</code>), indicating storage or transmission in plain text. The <code>bcrypt</code> library is imported but unused. This is a critical vulnerability.</li>
+</ul>
+<h3 id="cross-site-scripting-xss">Cross-Site Scripting (XSS)</h3>
+<ul>
+<li><strong>CRITICAL XSS in <code>views/entree.ejs</code>:</strong> The <code>remplirFormulaire</code> JavaScript function directly embeds dynamic EJS variables into <code>onclick</code> attributes without proper JSON encoding. This allows an attacker to inject arbitrary JavaScript by manipulating input data (e.g., product names).</li>
+<li><strong>CRITICAL XSS in <code>views/pers.ejs</code>:</strong> Similar to <code>entree.ejs</code>, the <code>remplirFormulaire</code> and <code>supprimerEmploye</code> JavaScript functions directly embed dynamic EJS variables into <code>onclick</code> attributes without proper JSON encoding, creating critical XSS vulnerabilities.</li>
+</ul>
+<h3 id="session-security">Session Security</h3>
+<ul>
+<li><strong>Insecure <code>cookie</code> configuration (app.js):</strong> <code>cookie: { secure: false }</code> is set in <code>app.js</code>. If the application is not consistently run over HTTPS, session cookies are vulnerable to Man-in-the-Middle attacks.</li>
+<li><strong>Weak <code>session</code> secret (app.js):</strong> <code>secret: 'votre_secret_key'</code> is a placeholder. A strong, random, and securely stored secret (e.g., via environment variables) is required to prevent session hijacking.</li>
+</ul>
+<h3 id="other-security-concerns">Other Security Concerns</h3>
+<ul>
+<li><strong>Lack of CSRF Protection:</strong> No apparent Cross-Site Request Forgery (CSRF) protection implemented, making the application vulnerable to unintended actions by authenticated users.</li>
+<li><strong>Sensitive Data Logging (app.js):</strong> <code>console.log(&quot;Corps de la requête reçu :&quot;, req.body);</code> in the <code>/login</code> route logs sensitive user input (including passwords) to the console or server logs, posing a security risk.</li>
+<li><strong>Lack of Server-Side Validation:</strong> Critical business logic, particularly for sales transactions (e.g., quantity checks in <code>/vente</code> POST route), relies heavily on client-side validation. This can be easily bypassed by malicious users, leading to data inconsistencies or fraud.</li>
+</ul>
+<h2 id="2-code-quality--best-practices">2. Code Quality &amp; Best Practices</h2>
+<h3 id="database-interaction-inconsistencies">Database Interaction Inconsistencies</h3>
+<ul>
+<li><strong>Mixed Database Drivers (app.js, package.json):</strong> The project mixes <code>express-myconnection</code> (using the older <code>mysql</code> package) with <code>mysql2/promise</code> within <code>app.js</code>. This creates confusion, potential resource leaks, and inconsistent API usage. The <code>/vente</code> POST route specifically exemplifies this problematic mix.</li>
+<li><strong>Conflicting Database Configurations (app.js, configs/db.js):</strong> <code>optionBd</code> is hardcoded in <code>app.js</code> with insecure defaults (e.g., empty password, <code>root</code> user, <code>localhost</code>), contradicting <code>configs/db.js</code> which correctly uses environment variables. The hardcoded configuration is used by <code>express-myconnection</code>.</li>
+<li><strong>Lack of Connection Error Handling for Pool (configs/db.js):</strong> <code>configs/db.js</code> does not include explicit error handling for initial database connection failures or for errors that might occur during connection acquisition from the <code>mysql2/promise</code> pool.</li>
+</ul>
+<h3 id="error-handling--modularity">Error Handling &amp; Modularity</h3>
+<ul>
+<li><strong>Scattered Error Handling (app.js):</strong> Error handling logic is inconsistent and repetitively implemented across many routes (<code>if (err) { ... }</code>). A centralized error handling middleware would improve maintainability and consistency.</li>
+<li><strong>Monolithic <code>app.js</code>:</strong> The <code>app.js</code> file contains a broad range of concerns (routing, authentication, database logic, business logic). This hinders modularity, readability, maintainability, and scalability. Routes and related logic should be modularized.</li>
+<li><strong>Callback Hell / Nested Callbacks (app.js):</strong> Many routes in <code>app.js</code> use deeply nested callbacks for asynchronous database operations (e.g., in the <code>/</code> route), making the code harder to read, understand, and debug.</li>
+</ul>
+<h3 id="frontend-ejs-templates">Frontend (EJS Templates)</h3>
+<ul>
+<li><strong>Inline Styles (All EJS files):</strong> Large blocks of <code>&lt;style&gt;</code> tags are directly embedded in all EJS templates. This is a maintainability and performance anti-pattern; CSS should be externalized into separate <code>.css</code> files.</li>
+<li><strong>Repetitive Table Structures (accueil.ejs, entree.ejs, pers.ejs, verification.ejs):</strong> Similar table layouts are repeated across multiple templates. These could be abstracted into reusable EJS partials to reduce code duplication.</li>
+<li><strong>Form Logic in View (entree.ejs, pers.ejs):</strong> JavaScript functions directly embedded in the templates mix presentation with behavior, making the code harder to manage.</li>
+</ul>
+<h3 id="unusedredundant-code">Unused/Redundant Code</h3>
+<ul>
+<li><code>bcrypt</code> is imported in <code>app.js</code> but explicitly not used for password hashing, despite being the correct tool for the job.</li>
+<li>The <code>mysql2/promise</code> <code>pool</code> from <code>configs/db.js</code> is imported but largely unused in <code>app.js</code> for routes that utilize <code>express-myconnection</code>.</li>
+<li>Redundant database drivers (<code>mysql</code> and <code>mysql2</code>) are listed in <code>package.json</code>.</li>
+<li><code>moment</code> and <code>ml-regression</code> are present in <code>package.json</code> but their usage is not evident in the provided codebase snippets.</li>
+<li><code>views/facture.ejs</code> is an incomplete placeholder template, rendering static content and missing intended dynamic data, making it non-functional as an invoice.</li>
+</ul>
+<h3 id="input-validation--data-handling">Input Validation &amp; Data Handling</h3>
+<ul>
+<li><strong>Incomplete/Missing Input Validation:</strong> Beyond simple presence checks, there is a general lack of comprehensive input validation (e.g., data types, formats, lengths, sanitization) for user inputs across the application.</li>
+<li><strong><code>DB_PORT</code> Handling (configs/db.js):</strong> <code>DB_PORT</code> is converted to a <code>Number</code> without validation that it is a valid number, potentially leading to <code>NaN</code> issues if the environment variable is missing or malformed.</li>
+<li><strong>Client-Side Date Formatting (accueil.ejs, admin.ejs, pers.ejs):</strong> Dates are formatted client-side using JavaScript. While functional, server-side pre-formatting could ensure consistency and simplify client logic.</li>
+</ul>
+<h3 id="usability--user-experience">Usability &amp; User Experience</h3>
+<ul>
+<li><strong>Filter Form Persistence (admin.ejs, pers.ejs, vente.ejs, verification.ejs):</strong> Filter forms do not retain their submitted values after page reload or submission, forcing users to re-enter search criteria and negatively impacting usability.</li>
+<li><strong>Confusing Form Input Fields (entree.ejs):</strong> The interaction between &quot;Choisir un produit existant&quot; (select) and &quot;Ou entrer un nouveau produit&quot; (text input) is unclear, potentially leading to user confusion or incorrect data entry.</li>
+<li><strong><code>select</code> with single <code>option</code> (vente.ejs):</strong> The product selection dropdowns in <code>vente.ejs</code> contain only one static <code>&lt;option&gt;</code>, making them functionally useless for selection.</li>
+</ul>
+<h3 id="inconsistent-naming--hardcoding">Inconsistent Naming &amp; Hardcoding</h3>
+<ul>
+<li><strong>Inconsistent Template Titles (entree.ejs, pers.ejs, verification.ejs):</strong> Titles like <code>SIH Femmes Enceintes</code> appear in templates, which seems like a copy-paste error given the project's name is &quot;SIGPP&quot;.</li>
+<li><strong>Inconsistent Variable Naming (admin.ejs):</strong> Using <code>dateNaissance</code> to format <code>log.date_connection</code>.</li>
+<li><strong>Hardcoded Select Options (pers.ejs):</strong> Options for <code>poste</code> and <code>contrat</code> are hardcoded in the EJS template; these should ideally be dynamically managed.</li>
+<li><strong>Misnamed Filter Field (verification.ejs):</strong> The filter label &quot;Voies&quot; expects input for <code>voies</code> but the server-side code in <code>app.js</code> expects <code>voie</code>, causing the filter to not work as intended.</li>
+<li><strong>Mismatch in Invoice Display (app.js, vente.ejs):</strong> Client-side JavaScript in <code>vente.ejs</code> attempts to redirect to <code>/facture/${data.idVente}</code>, expecting an <code>idVente</code> parameter, but <code>app.js</code> has a static <code>/facture</code> route and a commented-out dynamic one.</li>
+</ul>
+
+</body>
+</html>

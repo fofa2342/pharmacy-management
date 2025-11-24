@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - SIGPP</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Réinitialisation des styles par défaut */
+        body, h1, h2, p, ul, li {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Sidebar (menu latéral) */
+        .sidebar {
+            width: 250px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .sidebar nav ul {
+            list-style-type: none;
+        }
+
+        .sidebar nav ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .sidebar nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenu principal */
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            margin-left: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .content header {
+            margin-bottom: 20px;
+        }
+
+        .content h1 {
+            color: #333;
+            font-size: 2em;
+        }
+
+        .content h2 {
+            color: #4CAF50;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        /* Styles pour les tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Pied de page */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #datetime {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        /* Styles pour le formulaire de filtre */
+        .filter-form {
+            margin-bottom: 20px;
+        }
+
+        .filter-form label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .filter-form input, .filter-form select {
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .filter-form input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .filter-form input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar (menu latéral) -->
+    <aside class="sidebar">
+        <h2>Menu</h2>
+        <nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/verification">Vérification</a></li>
+                <li><a href="/entree">Enregistrer produit</a></li>
+                <li><a href="/pers">Gestion personnel</a></li>
+                <li><a href="/admin">Admin</a></li>
+                <li><a href="/facture">Facture</a></li>
+                <li><a href="/parametre">Parametre</a></li>
+                <li><a href="/logout">Déconnection</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Contenu principal -->
+    <main class="content">
+        <p id="datetime"></p>
+
+        <script>
+            function updateDateTime() {
+                const now = new Date();
+                const date = now.toLocaleDateString('fr-FR');
+                const time = now.toLocaleTimeString('fr-FR');
+                document.getElementById('datetime').textContent = `${date} ${time}`;
+            }
+
+            setInterval(updateDateTime, 1000);
+            updateDateTime();
+        </script>
+
+        <header>
+            <h1>Administration</h1>
+        </header>
+
+        <!-- Formulaire de filtre -->
+        <form action="/admin" method="GET" class="filter-form">
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" name="nom">
+
+            <label for="prenom">Prénom :</label>
+            <input type="text" id="prenom" name="prenom">
+
+            <label for="poste">Poste :</label>
+            <input type="text" id="poste" name="poste">
+
+            <label for="action">Action :</label>
+            <input type="text" id="action" name="action">
+
+            <input type="submit" value="Filtrer">
+        </form>
+
+        <!-- Tableau pour afficher les logs -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Date</th>
+                    <th>Heure</th>
+                    <th>Poste</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (logs && logs.length > 0) { %>
+                    <% logs.forEach(log => { %>
+                        <tr>
+                            <td><%= log.nom %></td>
+                            <td><%= log.prenom %></td>
+                            <td>
+                                <% const dateNaissance = new Date(log.date_connection); %>
+                                <%= dateNaissance.toLocaleDateString('fr-FR') %>
+                            </td>
+                            <td><%= log.heure_connection %></td>
+                            <td><%= log.poste %></td>
+                            <td><%= log.action %></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6">Aucun log trouvé.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>&copy; 2025 SIGPP</p>
+    </footer>
+</body>
+
+</html>

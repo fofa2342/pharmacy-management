@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <style>
+        /* Sidebar (menu latéral) */
+        .sidebar {
+            width: 250px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .sidebar nav ul {
+            list-style-type: none;
+        }
+
+        .sidebar nav ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .sidebar nav ul li a:hover {
+            text-decoration: underline;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .header h2, .header h3 {
+            margin: 0;
+        }
+        .info-left {
+            margin-bottom: 20px;
+        }
+        .info-left p {
+            margin: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>MINISTÈRE DE LA SANTE</h2>
+        <h2>REPUBLIQUE TOGOLAISE</h2>
+    </div>
+
+    <div class="header">
+        <h3>DISTRICT SANITAIRE GRAND LOMÉ</h3>
+        <h3>TRAVAIL LIBERTÉ PATRIE</h3>
+    </div>
+
+    <div class="info-left">
+        <p><strong>CMS TOGBLEKOPE</strong></p>
+        <p><strong>TEL : 71 39 51 77</strong></p>
+        <p><strong>N°vente : mar-04-03-20-000289    le 04/03/2025 à 10h50</strong></p>
+        <p><strong>CLIENT : workgroup</strong></p>
+        <p><strong>Vendeur : Moreau Pierre</strong></p>
+        <p><strong>Caissier : Moreau Pierre</strong></p>
+    </div>
+
+    <!-- Tableau après "Caissier" -->
+    <table>
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix unitaire</th>
+                <th>Quantité</th>
+                <th>Prix total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ANASTROZOLE ACCORD 1 mg, comprimé pelliculé</td>
+                <td>30</td>
+                <td>5</td>
+                <td>150</td>
+            </tr>
+            <tr>
+                <td>BECLOSPIN 800 microgrammes/2ml suspension pour inhalation</td>
+                <td>14</td>
+                <td>2</td>
+                <td>28</td>
+            </tr>
+            <tr>
+                <td>TRAMADOL EG L.P. 200 mg, comprimé à libération prolongée</td>
+                <td>8</td>
+                <td>5</td>
+                <td>40</td>
+            </tr>
+            <tr>
+                <td>PARACETAMOL/CODEINE TEVA 500 mg/30 mg, comprimé</td>
+                <td>1</td>
+                <td>2</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>CARVEDILOL VIATRIS 25 mg, comprimé pelliculé</td>
+                <td>3</td>
+                <td>12</td>
+                <td>36</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"><strong>Total :</strong></td>
+                <td><strong>256</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="info-left">
+        <p><strong>Mode de paiement : espece</strong></p>
+        <p><strong>REGLE : 300</strong></p>
+        <p><strong>NET A PAYER : 256</strong></p>
+        <p><strong>RENDU : 4 </strong></p>
+        <p><strong>MONNAIE : 40</strong></p>
+    </div>
+
+    <p><strong>PAS DE RETOUR DE PRODUITS APRES LA VENTE</strong></p>
+
+</body>
+</html>

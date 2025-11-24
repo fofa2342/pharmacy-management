@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enregistrement du Personnel - SIH Femmes Enceintes</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Réinitialisation des styles par défaut */
+        body,
+        h1,
+        h2,
+        p,
+        ul,
+        li {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Sidebar (menu latéral) */
+        .sidebar {
+            width: 250px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .sidebar nav ul {
+            list-style-type: none;
+        }
+
+        .sidebar nav ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .sidebar nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenu principal */
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            margin-left: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .content header {
+            margin-bottom: 20px;
+        }
+
+        .content h1 {
+            color: #333;
+            font-size: 2em;
+        }
+
+        .content h2 {
+            color: #4CAF50;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        /* Conteneur pour aligner les formulaires horizontalement */
+        .form-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap; /* Pour s'adapter aux petits écrans */
+            margin-bottom: 20px;
+        }
+
+        /* Style des formulaires */
+        .form-container form {
+            flex: 1;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-width: 280px; /* Pour éviter que les formulaires deviennent trop petits */
+        }
+
+        .form-container label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-container input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .form-container input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Styles pour le tableau des enregistrements */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Pied de page */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Date et heure en haut à droite */
+        #datetime {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        fieldset {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        legend {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .form-group label, .form-group input, .form-group select {
+            flex: 1;
+            min-width: 150px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar (menu latéral) -->
+    <aside class="sidebar">
+        <h2>Menu</h2>
+        <nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/verification">Vérification</a></li>
+                <li><a href="/admin">Administrer</a></li>
+                <li><a href="/pers">Enregistrement Personnel</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Contenu principal -->
+    <main class="content">
+        <p id="datetime"></p>
+
+        <script>
+            function updateDateTime() {
+                const now = new Date();
+                const date = now.toLocaleDateString('fr-FR');
+                const time = now.toLocaleTimeString('fr-FR');
+                document.getElementById('datetime').textContent = `${date} ${time}`;
+            }
+
+            setInterval(updateDateTime, 1000);
+            updateDateTime();
+        </script>
+
+        <header>
+            <h1>Enregistrement du Personnel</h1>
+        </header>
+        <fieldset>
+            <legend>Ajouter un Employé</legend>
+            <form action="/pers" method="POST" class="form-group">
+                <label>Matricule : <input type="text" name="matricule" required></label>
+                <label>Nom : <input type="text" name="nom" required></label>
+                <label>Prénom : <input type="text" name="prenom" required></label>
+                <label>Date de Naissance : <input type="date" name="datenaissance" required></label>
+                <label>Date d'Embauche : <input type="date" name="dateembauche" required></label>
+                <label>Diplôme : <input type="text" name="diplome" required></label>
+                <label>Poste : 
+                    <select name="poste" required>
+                        <option value="Caissier">Caissier</option>
+                        <option value="Accueil">Accueil</option>
+                        <option value="Administrateur">Administrateur</option>
+                        <option value="Assistant">Assistant</option>
+                    </select>
+                </label>
+                <label>Contrat : 
+                    <select name="contrat" required>
+                        <option value="CDI">CDI</option>
+                        <option value="CDD">CDD</option>
+                        <option value="Stage">Stage</option>
+                    </select>
+                </label>
+                <input type="submit" value="Enregistrer">
+            </form>
+        </fieldset>
+
+        <fieldset>
+            <legend>Filtrer les Employés</legend>
+            <form action="/pers" method="GET" class="form-group">
+                <label>Matricule : <input type="text" name="matricule"></label>
+                <label>Nom : <input type="text" name="nom"></label>
+                <label>Prénom : <input type="text" name="prenom"></label>
+                <label>Poste : <input type="text" name="poste"></label>
+                <label>Contrat : <input type="text" name="contrat"></label>
+                <input type="submit" value="Filtrer">
+            </form>
+        </fieldset>
+            <!-- Tableau pour afficher les enregistrements -->
+            <h2>Liste du Personnel</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matricule</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Date de Naissance</th>
+                        <th>Date d'Embauche</th>
+                        <th>Diplôme</th>
+                        <th>Poste</th>
+                        <th>Contrat</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (personnel && personnel.length > 0) { %>
+                        <% personnel.forEach(person => { %>
+                            <tr>
+                                <td><%= person.matricule %></td>
+                                <td><%= person.nom %></td>
+                                <td><%= person.prenom %></td>
+                                <td>
+                                    <% const dateNaissance = new Date(person.datenaissance); %>
+                                    <%= dateNaissance.toLocaleDateString('fr-FR') %>
+                                </td>
+                                <td>
+                                    <% const dateEmbauche = new Date(person.dateembauche); %>
+                                    <%= dateEmbauche.toLocaleDateString('fr-FR') %>
+                                </td>
+                                <td><%= person.diplome %></td>
+                                <td><%= person.poste %></td>
+                                <td><%= person.contrat %></td>
+                                <td>
+                                    <button class="edit-btn" onclick="remplirFormulaire(
+                                    '<%= person.matricule %>',
+                                    '<%= person.nom %>',
+                                    '<%= person.prenom %>',
+                                    '<%= person.datenaissance %>',
+                                    '<%= person.dateembauche %>',
+                                    '<%= person.diplome %>',
+                                    '<%= person.poste %>',
+                                    '<%= person.contrat %>'
+                                    )">Modifier</button>
+                                    <button class="delete-btn" onclick="supprimerEmploye('<%= person.matricule %>')">Supprimer</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="8">Aucun enregistrement trouvé.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+
+        </section>
+    </main>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>&copy; 2025 SIGPP</p>
+    </footer>
+    
+</body>
+
+<script>
+function supprimerEmploye(matricule) {
+    if (confirm('Voulez-vous vraiment supprimer cet employé ?')) {
+        fetch(`/pers/${matricule}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload(); // Recharge la page après suppression
+            } else {
+                alert("Erreur lors de la suppression");
+            }
+        })
+        .catch(error => console.error('Erreur :', error));
+    }
+}
+function formatDate(dateString) {
+    if (!dateString) return "";
+    let date = new Date(dateString);
+    let year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function remplirFormulaire(matricule, nom, prenom, datenaissance, dateembauche, diplome, poste, contrat) {
+    document.querySelector('input[name="matricule"]').value = matricule;
+    document.querySelector('input[name="nom"]').value = nom;
+    document.querySelector('input[name="prenom"]').value = prenom;
+    document.querySelector('input[name="datenaissance"]').value = formatDate(datenaissance);
+    document.querySelector('input[name="dateembauche"]').value = formatDate(dateembauche);
+    document.querySelector('input[name="diplome"]').value = diplome;
+    document.querySelector('select[name="poste"]').value = poste;
+    document.querySelector('select[name="contrat"]').value = contrat;
+
+    document.querySelector('input[type="submit"]').value = "Modifier";
+
+    let form = document.querySelector('form');
+    let hiddenInput = document.querySelector('input[name="modif_matricule"]');
+    if (!hiddenInput) {
+        hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "modif_matricule";
+        form.appendChild(hiddenInput);
+    }
+    hiddenInput.value = matricule;
+}
+</script>
+
+
+</html>

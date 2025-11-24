@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enregistrement du Produit - SIH Femmes Enceintes</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Réinitialisation des styles par défaut */
+        body,
+        h1,
+        h2,
+        p,
+        ul,
+        li {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Sidebar (menu latéral) */
+        .sidebar {
+            width: 250px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .sidebar nav ul {
+            list-style-type: none;
+        }
+
+        .sidebar nav ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .sidebar nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenu principal */
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            margin-left: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .content header {
+            margin-bottom: 20px;
+        }
+
+        .content h1 {
+            color: #4CAF50;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .content h2 {
+            color: #4CAF50;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .content p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Styles pour le formulaire horizontal */
+        .horizontal-form .form-row {
+            display: flex;
+            gap: 10px; /* Espace entre les champs */
+            margin-bottom: 10px; /* Espace entre les lignes */
+        }
+
+        .horizontal-form label {
+            flex: 1; /* Permet aux champs de s'étirer pour occuper l'espace disponible */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .horizontal-form input[type="text"],
+        .horizontal-form input[type="number"],
+        .horizontal-form input[type="date"],
+        .horizontal-form select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .horizontal-form input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .horizontal-form input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Pied de page */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        #datetime {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        legend{
+            color : #4CAF50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            max-width: 10px; /* Définir une largeur maximale pour chaque cellule */
+            word-wrap: break-word; /* Permettre au texte de revenir à la ligne */
+            overflow-wrap: break-word; /* Alternative moderne à word-wrap */
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        h1,h2{
+            text-align: center;
+        }
+        fieldset {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        legend {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .form-group label, .form-group input, .form-group select {
+            flex: 1;
+            min-width: 150px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar (menu latéral) -->
+    <aside class="sidebar">
+        <h2>Menu</h2>
+        <nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/verification">Vérification</a></li>
+                <li><a href="/admin">Administrer</a></li>
+                <li><a href="/entree">Enregistrement Produit</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Contenu principal -->
+    <main class="content">
+        <p id="datetime"></p>
+
+        <script>
+            function updateDateTime() {
+                const now = new Date();
+                const date = now.toLocaleDateString('fr-FR');
+                const time = now.toLocaleTimeString('fr-FR');
+                document.getElementById('datetime').textContent = `${date} ${time}`;
+            }
+
+            setInterval(updateDateTime, 1000);
+            updateDateTime();
+        </script>
+
+        <header>
+            <h1>Enregistrement d'un produit</h1>
+        </header>
+        <fieldset>
+            <legend>Enregistrement d'un produit</legend>
+            <form action="/entree" method="POST" class="form-group horizontal-form">
+                <div class="form-row">
+                    <label>ID : <input type="number" name="id" required></label>
+                    
+                    <!-- Champ de sélection pour choisir un produit existant -->
+                    <label>Choisir un produit existant :
+                        <select name="produit_existant">
+                            <option value="">-- Sélectionner un produit --</option>
+                            <% stock.forEach(produit => { %>
+                                <option value="<%= produit.nom %>"><%= produit.nom %> (ID: <%= produit.id %>)</option>
+                            <% }); %>
+                        </select>
+                    </label>
+            
+                    <!-- Champ pour entrer un nouveau produit -->
+                    <label>Ou entrer un nouveau produit : <input type="text" name="nouveau_produit" placeholder="Nom du nouveau produit"></label>
+                </div>
+                <div class="form-row">
+                    <label>Nom : <input type="text" name="nom" required></label>
+                    <label>Prix : <input type="number" name="prix" required></label>
+                </div>
+                <div class="form-row">
+                    <label>Forme : <input type="text" name="forme" required></label>
+                    <label>Voies : <input type="text" name="voie" required></label>
+                    <label>Date de création : <input type="date" name="datecreation" required></label>
+                </div>
+                <div class="form-row">
+                    <label>Date de péremption : <input type="date" name="dateperemption" required></label>
+                </div>
+                <div class="form-row">
+                    <label>Date d'entrée : <input type="date" name="dateentree" required></label>
+                    <label>Quantité : <input type="number" name="quantite" required></label>
+                </div>
+                <div class="form-row">
+                    <input type="submit" value="Enregistrer">
+                </div>
+            </form>
+        </fieldset>
+
+        <section>
+            <!-- Tableau pour afficher les enregistrements -->
+            <h2>Liste des produits existants</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+                        <th>Prix</th>
+                        <th>Voie(s)</th>
+                        <th>Forme</th>
+                        <th>Quantité</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (stock && stock.length > 0) { %>
+                        <% stock.forEach(product => { %>
+                            <tr>
+                                <td><%= product.id %></td>
+                                <td><%= product.nom %></td>
+                                <td><%= product.prix %></td>
+                                <td><%= product.voie %></td>
+                                <td><%= product.forme %></td>
+                                <td><%= product.quantite %></td>
+                                <td>
+                                    <!-- Bouton Modifier -->
+                                    <button class="edit-btn" onclick="remplirFormulaire(
+                                        '<%= product.id %>',
+                                        '<%= product.nom %>',
+                                        '<%= product.prix %>',
+                                        '<%= product.voie %>',
+                                        '<%= product.forme %>',
+                                        '<%= product.datecreation %>',
+                                        '<%= product.dateperemption %>',
+                                        '<%= product.dateentree %>',
+                                        '<%= product.quantite %>'
+
+                                    )">Modifier</button>
+                                    <!-- Bouton Supprimer avec confirmation -->
+                                    <form action="/supprimer/<%= product.id %>" method="POST" style="display:inline;">
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Voulez-vous vraiment supprimer ce produit ?');">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="7">Aucun produit trouvé.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+                
+            </table>
+
+        </section>
+    </main>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>&copy; 2025 SIGPP</p>
+    </footer>
+</body>
+
+<script>
+    function formatDate(date) {
+    const d = new Date(date);
+    return d.toISOString().split('T')[0];
+}
+
+    function remplirFormulaire(id, nom, prix, voie, forme, datecreation, dateperemption, dateentree, quantite) {
+    document.querySelector('input[name="id"]').value = id;
+    document.querySelector('input[name="nom"]').value = nom;
+    document.querySelector('input[name="prix"]').value = prix;
+    document.querySelector('input[name="voie"]').value = voie;
+    document.querySelector('input[name="forme"]').value = forme;
+    document.querySelector('input[name="datecreation"]').value = formatDate(datecreation);
+    document.querySelector('input[name="dateperemption"]').value = formatDate(dateperemption);
+    document.querySelector('input[name="dateentree"]').value = formatDate(dateentree);
+    document.querySelector('input[name="quantite"]').value = quantite;
+
+    document.querySelector('input[type="submit"]').value = "Modifier";
+
+    let form = document.querySelector('form');
+    let hiddenInput = document.querySelector('input[name="modif_id"]');
+    if (!hiddenInput) {
+        hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "modif_id";
+        form.appendChild(hiddenInput);
+    }
+    hiddenInput.value = id;
+}
+
+</script>
+</html>
