@@ -304,18 +304,17 @@
                                 <td><%= product.quantite %></td>
                                 <td>
                                     <!-- Bouton Modifier -->
-                                    <button class="edit-btn" onclick="remplirFormulaire(
-                                        '<%= product.id %>',
-                                        '<%= product.nom %>',
-                                        '<%= product.prix %>',
-                                        '<%= product.voie %>',
-                                        '<%= product.forme %>',
-                                        '<%= product.datecreation %>',
-                                        '<%= product.dateperemption %>',
-                                        '<%= product.dateentree %>',
-                                        '<%= product.quantite %>'
-
-                                    )">Modifier</button>
+                                    <button class="edit-btn" 
+                                        data-id="<%= product.id %>"
+                                        data-nom="<%= product.nom %>"
+                                        data-prix="<%= product.prix %>"
+                                        data-voie="<%= product.voie %>"
+                                        data-forme="<%= product.forme %>"
+                                        data-datecreation="<%= product.datecreation %>"
+                                        data-dateperemption="<%= product.dateperemption %>"
+                                        data-dateentree="<%= product.dateentree %>"
+                                        data-quantite="<%= product.quantite %>"
+                                        onclick="remplirFormulaire(this)">Modifier</button>
                                     <!-- Bouton Supprimer avec confirmation -->
                                     <form action="/supprimer/<%= product.id %>" method="POST" style="display:inline;">
                                         <button type="submit" class="delete-btn" onclick="return confirm('Voulez-vous vraiment supprimer ce produit ?');">
@@ -349,7 +348,17 @@
     return d.toISOString().split('T')[0];
 }
 
-    function remplirFormulaire(id, nom, prix, voie, forme, datecreation, dateperemption, dateentree, quantite) {
+    function remplirFormulaire(btn) {
+    const id = btn.dataset.id;
+    const nom = btn.dataset.nom;
+    const prix = btn.dataset.prix;
+    const voie = btn.dataset.voie;
+    const forme = btn.dataset.forme;
+    const datecreation = btn.dataset.datecreation;
+    const dateperemption = btn.dataset.dateperemption;
+    const dateentree = btn.dataset.dateentree;
+    const quantite = btn.dataset.quantite;
+
     document.querySelector('input[name="id"]').value = id;
     document.querySelector('input[name="nom"]').value = nom;
     document.querySelector('input[name="prix"]').value = prix;

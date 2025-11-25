@@ -318,17 +318,19 @@
                                 <td><%= person.poste %></td>
                                 <td><%= person.contrat %></td>
                                 <td>
-                                    <button class="edit-btn" onclick="remplirFormulaire(
-                                    '<%= person.matricule %>',
-                                    '<%= person.nom %>',
-                                    '<%= person.prenom %>',
-                                    '<%= person.datenaissance %>',
-                                    '<%= person.dateembauche %>',
-                                    '<%= person.diplome %>',
-                                    '<%= person.poste %>',
-                                    '<%= person.contrat %>'
-                                    )">Modifier</button>
-                                    <button class="delete-btn" onclick="supprimerEmploye('<%= person.matricule %>')">Supprimer</button>
+                                    <button class="edit-btn" 
+                                        data-matricule="<%= person.matricule %>"
+                                        data-nom="<%= person.nom %>"
+                                        data-prenom="<%= person.prenom %>"
+                                        data-datenaissance="<%= person.datenaissance %>"
+                                        data-dateembauche="<%= person.dateembauche %>"
+                                        data-diplome="<%= person.diplome %>"
+                                        data-poste="<%= person.poste %>"
+                                        data-contrat="<%= person.contrat %>"
+                                        onclick="remplirFormulaire(this)">Modifier</button>
+                                    <button class="delete-btn" 
+                                        data-matricule="<%= person.matricule %>"
+                                        onclick="supprimerEmploye(this)">Supprimer</button>
                                 </td>
                             </tr>
                         <% }); %>
@@ -351,7 +353,8 @@
 </body>
 
 <script>
-function supprimerEmploye(matricule) {
+function supprimerEmploye(btn) {
+    const matricule = btn.dataset.matricule;
     if (confirm('Voulez-vous vraiment supprimer cet employé ?')) {
         fetch(`/pers/${matricule}`, {
             method: 'DELETE'
@@ -371,13 +374,23 @@ function supprimerEmploye(matricule) {
 function formatDate(dateString) {
     if (!dateString) return "";
     let date = new Date(dateString);
+    if (isNaN(date.getTime())) return ""; // Handle invalid dates
     let year = date.getFullYear();
     let month = (date.getMonth() + 1).toString().padStart(2, '0');
     let day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
 
-function remplirFormulaire(matricule, nom, prenom, datenaissance, dateembauche, diplome, poste, contrat) {
+function remplirFormulaire(btn) {
+    const matricule = btn.dataset.matricule;
+    const nom = btn.dataset.nom;
+    const prenom = btn.dataset.prenom;
+    const datenaissance = btn.dataset.datenaissance;
+    const dateembauche = btn.dataset.dateembauche;
+    const diplome = btn.dataset.diplome;
+    const poste = btn.dataset.poste;
+    const contrat = btn.dataset.contrat;
+
     document.querySelector('input[name="matricule"]').value = matricule;
     document.querySelector('input[name="nom"]').value = nom;
     document.querySelector('input[name="prenom"]').value = prenom;

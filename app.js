@@ -1,14 +1,28 @@
 // all the imports
 
+import 'dotenv/config';
 import express from 'express';
-import myConnection from 'express-myconnection'
-import bcrypt from 'bcrypt'
+import myConnection from 'express-myconnection';
+import bcrypt from 'bcrypt';
+import mysql from 'mysql2';
 import session from 'express-session';
-import pool from './configs/db.js'
 
 // variables definition
 
 const app = express();
+
+const dbOptions = {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    port: Number(process.env.DB_PORT),
+    ssl: {
+        rejectUnauthorized: false
+    }
+};
+
+app.use(myConnection(mysql, dbOptions, 'pool'));
 
 // Middleware pour parser les données du formulaire
 app.use(express.urlencoded({ extended: false }));
@@ -57,7 +71,7 @@ app.post('/login', (req, res) => {
     const matriculeNettoye = matricule.replace(/\s/g, ''); // Supprime tous les espaces
 
     // Requête SQL pour récupérer l'utilisateur
-    const query = 'SELECT * FROM personnel WHERE REPLACE(matricule, " ", "") = ?';
+    const query = `SELECT * FROM personnel WHERE REPLACE(matricule, ' ', '') = ?`;
 
     req.getConnection((err, connection) => {
         if (err) {
@@ -82,42 +96,49 @@ app.post('/login', (req, res) => {
             console.log("Utilisateur trouvé :", utilisateur);
 
             // Vérifier le mot de passe
-            if (motDePasse !== utilisateur.mot_de_passe) {
-                console.log("Mot de passe incorrect pour l'utilisateur :", utilisateur.matricule);
-                return res.status(401).json({ error: "Matricule ou mot de passe incorrect." });
-            }
-
-            // Connexion réussie
-            console.log("Connexion réussie pour l'utilisateur :", utilisateur.matricule);
-
-            // Enregistrer l'action de connexion dans la table logs_connexion
-            const logQuery = `
-                INSERT INTO logs_connexion (nom, prenom, date_connection, heure_connection, poste, action)
-                VALUES (?, ?, CURDATE(), CURTIME(), ?, 'connexion')
-            `;
-            connection.query(logQuery, [utilisateur.nom, utilisateur.prenom, utilisateur.poste], (logError, logResults) => {
-                if (logError) {
-                    console.error("Erreur lors de l'enregistrement du log :", logError);
-                } else {
-                    console.log("Log de connexion enregistré avec succès.");
+            bcrypt.compare(motDePasse, utilisateur.mot_de_passe, (err, isMatch) => {
+                if (err) {
+                    console.error("Erreur lors de la vérification du mot de passe :", err);
+                    return res.status(500).json({ error: "Erreur interne." });
                 }
+                
+                if (!isMatch) {
+                    console.log("Mot de passe incorrect pour l'utilisateur :", utilisateur.matricule);
+                    return res.status(401).json({ error: "Matricule ou mot de passe incorrect." });
+                }
+
+                // Connexion réussie
+                console.log("Connexion réussie pour l'utilisateur :", utilisateur.matricule);
+
+                // Enregistrer l'action de connexion dans la table logs_connexion
+                const logQuery = `
+                    INSERT INTO logs_connexion (nom, prenom, date_connection, heure_connection, poste, action)
+                    VALUES (?, ?, CURDATE(), CURTIME(), ?, 'connexion')
+                `;
+                connection.query(logQuery, [utilisateur.nom, utilisateur.prenom, utilisateur.poste], (logError, logResults) => {
+                    if (logError) {
+                        console.error("Erreur lors de l'enregistrement du log :", logError);
+                    } else {
+                        console.log("Log de connexion enregistré avec succès.");
+                    }
+                });
+
+                // Stocker l'utilisateur dans la session
+                req.session.utilisateur = utilisateur;
+
+                // Rediriger en fonction du rôle
+                let redirectUrl = "";
+                switch (utilisateur.role) {
+                    case 'administrateur': redirectUrl = "/admin"; break;
+                    case 'accueil': redirectUrl = "/"; break;
+                    case 'vendeur': redirectUrl = "/vente"; break;
+                    case 'verifieur': redirectUrl = "/verification"; break;
+                    default: return res.status(403).json({ error: "Accès refusé." });
+                }
+
+                // Retourner la réponse
+                res.json({ success: true, redirect: redirectUrl });
             });
-
-            // Stocker l'utilisateur dans la session
-            req.session.utilisateur = utilisateur;
-
-            // Rediriger en fonction du rôle
-            let redirectUrl = "";
-            switch (utilisateur.role) {
-                case 'administrateur': redirectUrl = "/admin"; break;
-                case 'accueil': redirectUrl = "/"; break;
-                case 'vendeur': redirectUrl = "/vente"; break;
-                case 'verifieur': redirectUrl = "/verification"; break;
-                default: return res.status(403).json({ error: "Accès refusé." });
-            }
-
-            // Retourner la réponse
-            res.json({ success: true, redirect: redirectUrl });
         });
     });
 });
@@ -324,9 +345,10 @@ app.post('/vente', async (req, res) => {
 
             // Récupération et verrouillage des produits en une seule requête
             const productIds = stockData.map(p => p.id_produit);
-            const checkQuery = `SELECT id, quantite, prix FROM stock WHERE id IN (${productIds.join(',')}) FOR UPDATE`;
+            const placeholders = productIds.map(() => '?').join(',');
+            const checkQuery = `SELECT id, quantite, prix FROM stock WHERE id IN (${placeholders}) FOR UPDATE`;
             const products = await new Promise((resolve, reject) => {
-                connection.query(checkQuery, (err, results) => {
+                connection.query(checkQuery, productIds, (err, results) => {
                     if (err) return reject(err);
                     resolve(results);
                 });
@@ -352,9 +374,20 @@ app.post('/vente', async (req, res) => {
             });
 
             // Mise à jour du stock en une seule requête
-            const updateQuery = `UPDATE stock SET quantite = CASE 
-                ${stockData.map(p => `WHEN id = ${p.id_produit} THEN quantite - ${p.quantite}`).join(' ')}
-            END WHERE id IN (${productIds.join(',')})`;
+            // Note: complex CASE updates are harder to parameterize perfectly without multiple queries or stored procedures,
+            // but we can sanitize the IDs at least. Since productIds are derived from input, we should be careful.
+            // Ideally, perform updates individually or use a safe construction.
+            // For this fix, we will stick to the logic but ensure IDs are integers.
+            
+            const safeStockData = stockData.map(p => ({
+                id_produit: parseInt(p.id_produit, 10),
+                quantite: parseInt(p.quantite, 10)
+            })).filter(p => !isNaN(p.id_produit) && !isNaN(p.quantite));
+
+             const updateQuery = `UPDATE stock SET quantite = CASE 
+                ${safeStockData.map(p => `WHEN id = ${p.id_produit} THEN quantite - ${p.quantite}`).join(' ')}
+            END WHERE id IN (${safeStockData.map(p => p.id_produit).join(',')})`;
+            
             await new Promise((resolve, reject) => {
                 connection.query(updateQuery, (err) => {
                     if (err) return reject(err);
